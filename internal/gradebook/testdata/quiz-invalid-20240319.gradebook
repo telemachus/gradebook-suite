@@ -1,0 +1,28 @@
+{
+    "assignment_date": "20240319",
+    "assignment_name": "golden",
+    "assignment_subcategory": "quiz",
+    "assignment_category": "minor",
+    "assignment_grades": [
+        {
+            "email": "gstriker@school.edu",
+            "score": 94.2
+        },
+        {
+            "email": "mfrede@school.edu",
+            "score": 94
+        },
+        {
+            "email": "jannas@school.edu",
+            "score": 104
+        },
+        {
+            "email": "agomezlobo@school.edu",
+            "score": 81
+        },
+        {
+            "email": "gfine@school.edu",
+            "score": null
+        },
+    ]
+}

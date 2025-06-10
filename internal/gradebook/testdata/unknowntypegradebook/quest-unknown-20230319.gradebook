@@ -1,0 +1,28 @@
+{
+    "assignment_category": "quest",
+    "assignment_date": "20240319",
+    "assignment_grades": [
+        {
+            "email": "gstriker@school.edu",
+            "score": 94.2
+        },
+        {
+            "email": "mfrede@school.edu",
+            "score": 94
+        },
+        {
+            "email": "jannas@school.edu",
+            "score": 104
+        },
+        {
+            "email": "agomezlobo@school.edu",
+            "score": 81
+        },
+        {
+            "email": "gfine@school.edu",
+            "score": null
+        }
+    ],
+    "assignment_name": "unknown",
+    "assignment_type": "semimajor"
+}

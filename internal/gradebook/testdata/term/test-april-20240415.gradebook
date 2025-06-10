@@ -1,0 +1,28 @@
+{
+    "assignment_category": "test",
+    "assignment_date": "20240415",
+    "assignment_grades": [
+        {
+            "email": "gstriker@school.edu",
+            "score": 89
+        },
+        {
+            "email": "mfrede@school.edu",
+            "score": 91.5
+        },
+        {
+            "email": "jannas@school.edu",
+            "score": 93
+        },
+        {
+            "email": "agomezlobo@school.edu",
+            "score": 85.5
+        },
+        {
+            "email": "gfine@school.edu",
+            "score": 88
+        }
+    ],
+    "assignment_name": "april",
+    "assignment_type": "major"
+}
