@@ -90,7 +90,7 @@ func TestIsValidType(t *testing.T) {
 	t.Parallel()
 
 	class := &gradebook.Class{
-		AssignmentTypes: gradebook.AssignmentTypes{"major", "minor", "cp"},
+		AssignmentTypes: gradebook.AssignmentTypes{"test", "quiz", "cp"},
 	}
 
 	tests := map[string]struct {
@@ -99,11 +99,11 @@ func TestIsValidType(t *testing.T) {
 		wantStderr bool
 	}{
 		"valid type": {
-			gbType:   "major",
+			gbType:   "test",
 			wantExit: exitSuccess,
 		},
 		"another valid type": {
-			gbType:   "minor",
+			gbType:   "quiz",
 			wantExit: exitSuccess,
 		},
 		"third valid type": {
@@ -111,7 +111,7 @@ func TestIsValidType(t *testing.T) {
 			wantExit: exitSuccess,
 		},
 		"invalid type": {
-			gbType:     "quiz",
+			gbType:     "major",
 			wantExit:   exitFailure,
 			wantStderr: true,
 		},
@@ -230,7 +230,7 @@ func TestCheckNew(t *testing.T) {
 	t.Parallel()
 
 	class := &gradebook.Class{
-		AssignmentTypes: gradebook.AssignmentTypes{"major", "minor", "cp"},
+		AssignmentTypes: gradebook.AssignmentTypes{"test", "quiz", "cp"},
 	}
 
 	tests := map[string]struct {
@@ -282,7 +282,7 @@ func TestCheckNew(t *testing.T) {
 			exitValue: exitSuccess,
 			cfg: newCfg{
 				gbName: "invalid@name",
-				gbType: "major",
+				gbType: "quiz",
 				gbDate: "20240319",
 			},
 			wantExit:   exitFailure,
@@ -293,7 +293,7 @@ func TestCheckNew(t *testing.T) {
 			exitValue: exitSuccess,
 			cfg: newCfg{
 				gbName: "name",
-				gbType: "maj",
+				gbType: "major",
 				gbDate: "20240319",
 			},
 			wantExit:   exitFailure,
