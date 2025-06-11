@@ -1,5 +1,5 @@
 {
-    "assignment_category": "quiz",
+    "assignment_category": "minor",
     "assignment_date": "20240319",
     "assignment_grades": [
         {
@@ -24,5 +24,5 @@
         }
     ],
     "assignment_name": "golden",
-    "assignment_type": "minor"
+    "assignment_type": "quiz"
 }

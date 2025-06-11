@@ -25,26 +25,28 @@ type Term struct {
 // TermsByID maps Terms by short ID (e.g., "q1" points to the first quarter).
 type TermsByID map[string]*Term
 
-// AssignmentTypes stores basic assignment types.
-type AssignmentTypes []string
+// AssignmentCategories stores basic assignment categories, the broad groupings
+// such as "major" and "minor".
+type AssignmentCategories []string
 
-// LabelsByAssignmentType maps human-readable labels by a type of assignment.
-// E.g., the type "cp" has the label "Class Participation", and the type
-// "major" has the label "Major Assessments".
-type LabelsByAssignmentType map[string]string
+// LabelsByAssignmentCategory maps human-readable labels by a category of
+// assignment. E.g., the category "cp" has the label "Class Participation",
+// and the category "major" has the label "Major Assessments".
+type LabelsByAssignmentCategory map[string]string
 
-// WeightsByAssignmentType maps percentage values in a grading rubric by
-// assignment type. The sum of the weights must equal 100 in order for this
+// WeightsByAssignmentCategory maps percentage values in a grading rubric by
+// assignment category. The sum of the weights must equal 100 in order for this
 // type to be valid.
-type WeightsByAssignmentType map[string]int
+type WeightsByAssignmentCategory map[string]int
 
-// CategoriesByAssignmentType maps assignment categories by their basic type.
-// (E.g., "test", "essay", and "project" are all categories of the "major"
-// assignment type.) Every category must belong to one and only one type, and
-// every category must be present in CategoriesByAssignmentType. Also, and this
-// is less obvious, every assignment type must have a category. If a type has
-// only a single category, the category and type will often have the same name.
-// E.g., "cp" is the category of the "cp" assignment type.
+// CategoriesByAssignmentType maps categories by their assignment type. (E.g.,
+// "test", "essay", and "project" all have the category "major". Every
+// assignment type must belong to one and only one category, and every
+// assignment type must be present in CategoriesByAssignmentType. Also, and
+// this is less obvious, every assignment category must have an assignment
+// type. If a category has only a single assignment type, the category and type
+// will often have the same name.  E.g., both the category and the type are
+// "cp"."
 type CategoriesByAssignmentType map[string]string
 
 // Grade represents a single grade
@@ -67,9 +69,9 @@ type Gradebook struct {
 
 // Student represents a student.
 type Student struct {
-	GradesByType map[string][]float64
-	FirstName    string `json:"first_name"`
-	LastName     string `json:"last_name"`
+	GradesByCategory map[string][]float64
+	FirstName        string `json:"first_name"`
+	LastName         string `json:"last_name"`
 }
 
 // StudentsByEmail maps students by their email. (NB: an email is an
@@ -79,13 +81,13 @@ type StudentsByEmail map[string]*Student
 
 // Class represents a class and its students.
 type Class struct {
-	TermsByID                  `json:"terms_by_id"`
-	LabelsByAssignmentType     `json:"labels_by_assignment_type"`
-	WeightsByAssignmentType    `json:"weights_by_assignment_type"`
-	CategoriesByAssignmentType `json:"categories_by_assignment_type"`
-	StudentsByEmail            `json:"students_by_email"`
-	Name                       string `json:"name"`
-	AssignmentTypes            `json:"assignment_types"`
+	TermsByID                   `json:"terms_by_id"`
+	LabelsByAssignmentCategory  `json:"labels_by_assignment_category"`
+	WeightsByAssignmentCategory `json:"weights_by_assignment_category"`
+	CategoriesByAssignmentType  `json:"categories_by_assignment_type"`
+	StudentsByEmail             `json:"students_by_email"`
+	Name                        string `json:"name"`
+	AssignmentCategories        `json:"assignment_categories"`
 }
 
 // UnmarshalClass unmarshals a class.json file into a pointer to Class.
@@ -188,12 +190,12 @@ func (c *Class) loadGradebookFile(gradebookPath string) error {
 			return fmt.Errorf("no student with email %q", grade.Email)
 		}
 
-		_, ok = student.GradesByType[assignmentType]
+		_, ok = student.GradesByCategory[assignmentType]
 		if !ok {
 			return fmt.Errorf("unrecognized assignment type %q", assignmentType)
 		}
 
-		student.GradesByType[assignmentType] = append(student.GradesByType[assignmentType], *grade.Score)
+		student.GradesByCategory[assignmentType] = append(student.GradesByCategory[assignmentType], *grade.Score)
 	}
 
 	return nil

@@ -4,6 +4,7 @@ package cli
 import (
 	"fmt"
 	"io"
+	"maps"
 	"os"
 	"path/filepath"
 	"regexp"
@@ -146,7 +147,8 @@ func isValidType(cmd *cmdEnv, gbType string, class *gradebook.Class) {
 		return
 	}
 
-	if !slices.Contains(class.AssignmentTypes, gbType) {
+	gbTypes := slices.Collect(maps.Keys(class.CategoriesByAssignmentType))
+	if !slices.Contains(gbTypes, gbType) {
 		cmd.exitValue = exitFailure
 		fmt.Fprintf(cmd.stderr, "%s: invalid argument for -type: %q\n", cmd.name, gbType)
 	}

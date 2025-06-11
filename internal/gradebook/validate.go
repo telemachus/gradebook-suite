@@ -30,14 +30,14 @@ func (c *Class) checkInitialization() error {
 	if c.TermsByID == nil {
 		zvals = append(zvals, "TermsByID")
 	}
-	if c.AssignmentTypes == nil {
-		zvals = append(zvals, "AssignmentTypes")
+	if c.AssignmentCategories == nil {
+		zvals = append(zvals, "AssignmentCategories")
 	}
-	if c.LabelsByAssignmentType == nil {
-		zvals = append(zvals, "LabelsByAssignmentType")
+	if c.LabelsByAssignmentCategory == nil {
+		zvals = append(zvals, "LabelsByAssignmentCategory")
 	}
-	if c.WeightsByAssignmentType == nil {
-		zvals = append(zvals, "WeightsByAssignmentType")
+	if c.WeightsByAssignmentCategory == nil {
+		zvals = append(zvals, "WeightsByAssignmentCategory")
 	}
 	if c.CategoriesByAssignmentType == nil {
 		zvals = append(zvals, "CategoriesByAssignmentType")
@@ -52,12 +52,12 @@ func (c *Class) checkInitialization() error {
 // checkWeightsSum ensures that c.Weights adds up to 100%.
 func (c *Class) checkWeightsSum() error {
 	total := 0
-	for _, n := range c.WeightsByAssignmentType {
+	for _, n := range c.WeightsByAssignmentCategory {
 		total += n
 	}
 
 	if total != 100 {
-		return errors.New("gradebook: WeightsByAssignmentType must equal 100%")
+		return errors.New("gradebook: WeightsByAssignmentCategory must equal 100%")
 	}
 
 	return nil
@@ -76,10 +76,10 @@ func checkEq[T comparable](lhs, rhs set.Set[T]) error {
 // valid. Otherwise it returns an error containing one more errors from the
 // individual checks. Those errors are combined using errors.Join.
 func (c *Class) Validate() error {
-	assignmentsSet := set.New(c.AssignmentTypes...)
+	assignmentsSet := set.New(c.AssignmentCategories...)
 	categoriesSet := set.New(maps.Values(c.CategoriesByAssignmentType)...)
-	weightsSet := set.New(maps.Keys(c.WeightsByAssignmentType)...)
-	labelsSet := set.New(maps.Keys(c.LabelsByAssignmentType)...)
+	weightsSet := set.New(maps.Keys(c.WeightsByAssignmentCategory)...)
+	labelsSet := set.New(maps.Keys(c.LabelsByAssignmentCategory)...)
 
 	return errors.Join(
 		c.checkInitialization(),

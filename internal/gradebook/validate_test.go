@@ -31,19 +31,19 @@ func TestInitializationInvalid(t *testing.T) {
 				c.TermsByID = nil
 			},
 		},
-		"class.AssignmentTypes unset": {
+		"class.AssignmentCategories unset": {
 			transformClass: func(c *gradebook.Class) {
-				c.AssignmentTypes = nil
+				c.AssignmentCategories = nil
 			},
 		},
-		"class.LabelsByAssignmentType unset": {
+		"class.LabelsByAssignmentCategory unset": {
 			transformClass: func(c *gradebook.Class) {
-				c.LabelsByAssignmentType = nil
+				c.LabelsByAssignmentCategory = nil
 			},
 		},
-		"class.WeightsByAssignmentType unset": {
+		"class.WeightsByAssignmentCategory unset": {
 			transformClass: func(c *gradebook.Class) {
-				c.WeightsByAssignmentType = nil
+				c.WeightsByAssignmentCategory = nil
 			},
 		},
 		"class.CategoriesByAssignmentType unset": {
@@ -80,24 +80,24 @@ func TestWeightsSumInvalid(t *testing.T) {
 	testCases := map[string]struct {
 		transformClass func(c *gradebook.Class)
 	}{
-		"no WeightsByAssignmentType": {
+		"no WeightsByAssignmentCategory": {
 			transformClass: func(c *gradebook.Class) {
-				c.WeightsByAssignmentType = gradebook.WeightsByAssignmentType{}
+				c.WeightsByAssignmentCategory = gradebook.WeightsByAssignmentCategory{}
 			},
 		},
-		"WeightsByAssignmentType under 100": {
+		"WeightsByAssignmentCategory under 100": {
 			transformClass: func(c *gradebook.Class) {
-				c.WeightsByAssignmentType["major"] = 25
+				c.WeightsByAssignmentCategory["major"] = 25
 			},
 		},
-		"WeightsByAssignmentType over 100": {
+		"WeightsByAssignmentCategory over 100": {
 			transformClass: func(c *gradebook.Class) {
-				c.WeightsByAssignmentType["major"] = 75
+				c.WeightsByAssignmentCategory["major"] = 75
 			},
 		},
 		"Weights below 0": {
 			transformClass: func(c *gradebook.Class) {
-				c.WeightsByAssignmentType["major"] = -175
+				c.WeightsByAssignmentCategory["major"] = -175
 			},
 		},
 	}
@@ -124,14 +124,14 @@ func TestSetEqualityInvalid(t *testing.T) {
 	testCases := map[string]struct {
 		transformClass func(c *gradebook.Class)
 	}{
-		"missing items from AssignmentTypes": {
+		"missing items from AssignmentCategories": {
 			transformClass: func(c *gradebook.Class) {
-				clear(c.AssignmentTypes)
+				clear(c.AssignmentCategories)
 			},
 		},
-		"extra item in AssignmentTypes": {
+		"extra item in AssignmentCategories": {
 			transformClass: func(c *gradebook.Class) {
-				c.AssignmentTypes = append(c.AssignmentTypes, "random")
+				c.AssignmentCategories = append(c.AssignmentCategories, "random")
 			},
 		},
 		"missing item from CategoriesByAssignmentType": {
@@ -144,24 +144,24 @@ func TestSetEqualityInvalid(t *testing.T) {
 				c.CategoriesByAssignmentType["random"] = "random"
 			},
 		},
-		"missing item from LabelsByAssignmentType": {
+		"missing item from LabelsByAssignmentCategory": {
 			transformClass: func(c *gradebook.Class) {
-				delete(c.LabelsByAssignmentType, "cp")
+				delete(c.LabelsByAssignmentCategory, "cp")
 			},
 		},
-		"extra item in LabelsByAssignmentType": {
+		"extra item in LabelsByAssignmentCategory": {
 			transformClass: func(c *gradebook.Class) {
-				c.LabelsByAssignmentType["random"] = "Random Item"
+				c.LabelsByAssignmentCategory["random"] = "Random Item"
 			},
 		},
-		"missing item from WeightsByAssignmentType": {
+		"missing item from WeightsByAssignmentCategory": {
 			transformClass: func(c *gradebook.Class) {
-				delete(c.WeightsByAssignmentType, c.AssignmentTypes[0])
+				delete(c.WeightsByAssignmentCategory, c.AssignmentCategories[0])
 			},
 		},
-		"extra item in WeightsByAssignmentType": {
+		"extra item in WeightsByAssignmentCategory": {
 			transformClass: func(c *gradebook.Class) {
-				c.WeightsByAssignmentType["random"] = 0
+				c.WeightsByAssignmentCategory["random"] = 0
 			},
 		},
 	}

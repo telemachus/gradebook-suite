@@ -90,7 +90,11 @@ func TestIsValidType(t *testing.T) {
 	t.Parallel()
 
 	class := &gradebook.Class{
-		AssignmentTypes: gradebook.AssignmentTypes{"test", "quiz", "cp"},
+		CategoriesByAssignmentType: gradebook.CategoriesByAssignmentType{
+			"test": "major",
+			"quiz": "minor",
+			"cp":   "cp",
+		},
 	}
 
 	tests := map[string]struct {
@@ -230,7 +234,11 @@ func TestCheckNew(t *testing.T) {
 	t.Parallel()
 
 	class := &gradebook.Class{
-		AssignmentTypes: gradebook.AssignmentTypes{"test", "quiz", "cp"},
+		CategoriesByAssignmentType: gradebook.CategoriesByAssignmentType{
+			"test": "major",
+			"quiz": "minor",
+			"cp":   "cp",
+		},
 	}
 
 	tests := map[string]struct {
