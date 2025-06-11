@@ -238,6 +238,7 @@ func fakeCalcClass() *gradebook.Class {
 func fakeGradebook() *gradebook.Gradebook {
 	return &gradebook.Gradebook{
 		AssignmentDate:     "20240319",
+		AssignmentName:     "golden",
 		AssignmentType:     "minor",
 		AssignmentCategory: "quiz",
 		Grades: gradebook.Grades{

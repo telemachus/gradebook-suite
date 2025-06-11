@@ -59,6 +59,7 @@ type Grades []*Grade
 // Gradebook represents a single gradebook file.
 type Gradebook struct {
 	AssignmentDate     string `json:"assignment_date"`
+	AssignmentName     string `json:"assignment_name"`
 	AssignmentType     string `json:"assignment_type"`
 	AssignmentCategory string `json:"assignment_category"`
 	Grades             `json:"assignment_grades"`
