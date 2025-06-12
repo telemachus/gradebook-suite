@@ -1,9 +1,7 @@
 package cli
 
 import (
-	"cmp"
 	"fmt"
-	"slices"
 
 	"github.com/telemachus/gradebook-suite/internal/gradebook"
 )
@@ -32,12 +30,7 @@ func (cmd *cmdEnv) displayNames(class *gradebook.Class) {
 		return
 	}
 
-	students := make([]*gradebook.Student, 0, len(class.StudentsByEmail))
-	for _, student := range class.StudentsByEmail {
-		students = append(students, student)
-	}
-	slices.SortFunc(students, cmpStudent)
-
+	students := class.StudentsSortedByName()
 	for _, s := range students {
 		switch cmd.lastFirst {
 		case true:
@@ -46,12 +39,4 @@ func (cmd *cmdEnv) displayNames(class *gradebook.Class) {
 			fmt.Fprintf(cmd.stdout, "%s %s\n", s.FirstName, s.LastName)
 		}
 	}
-}
-
-func cmpStudent(x, y *gradebook.Student) int {
-	if x.LastName == y.LastName {
-		return cmp.Compare(x.FirstName, y.FirstName)
-	}
-
-	return cmp.Compare(x.LastName, y.LastName)
 }

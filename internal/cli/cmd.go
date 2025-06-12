@@ -4,12 +4,9 @@ package cli
 import (
 	"fmt"
 	"io"
-	"maps"
 	"os"
 	"path/filepath"
 	"regexp"
-	"slices"
-	"time"
 
 	"github.com/telemachus/gradebook-suite/internal/gradebook"
 	"github.com/telemachus/gradebook-suite/internal/opts"
@@ -84,29 +81,6 @@ type newCfg struct {
 	gbDate string
 }
 
-func (cmd *cmdEnv) parseNew(args []string) ([]string, newCfg) {
-	og := opts.NewGroup(cmd.name)
-	og.String(&cmd.classFile, "class", "class.json")
-	og.String(&cmd.directory, "directory", "")
-	og.Bool(&cmd.helpWanted, "help")
-	og.Bool(&cmd.helpWanted, "h")
-	og.Bool(&cmd.versionWanted, "version")
-
-	var gbCfg newCfg
-	og.String(&gbCfg.gbName, "name", "")
-	og.String(&gbCfg.gbType, "type", "")
-	og.String(&gbCfg.gbDate, "date", "")
-
-	if err := og.Parse(args); err != nil {
-		cmd.exitValue = exitFailure
-		fmt.Fprintf(cmd.stderr, "%s: %s\n", cmd.name, err)
-
-		return nil, gbCfg
-	}
-
-	return og.Args(), gbCfg
-}
-
 func (cmd *cmdEnv) check(extraArgs []string) {
 	if cmd.minNoOp() {
 		return
@@ -122,46 +96,6 @@ func (cmd *cmdEnv) check(extraArgs []string) {
 		}
 
 		fmt.Fprintf(cmd.stderr, "%s: unrecognized argument%s: %+v\n", cmd.name, s, extraArgs)
-	}
-}
-
-func (cmd *cmdEnv) checkNew(cfg newCfg, class *gradebook.Class) {
-	if cmd.noOp() {
-		return
-	}
-
-	isValidName(cmd, cfg.gbName)
-	isValidType(cmd, cfg.gbName, class)
-	isValidDate(cmd, cfg.gbName)
-}
-
-func isValidName(cmd *cmdEnv, gbName string) {
-	if gbName == "" || invalidGbNameRegex.MatchString(gbName) {
-		cmd.exitValue = exitFailure
-		fmt.Fprintf(cmd.stderr, "%s: invalid argument for -name: %q\n", cmd.name, gbName)
-	}
-}
-
-func isValidType(cmd *cmdEnv, gbType string, class *gradebook.Class) {
-	if cmd.minNoOp() {
-		return
-	}
-
-	gbTypes := slices.Collect(maps.Keys(class.CategoriesByAssignmentType))
-	if !slices.Contains(gbTypes, gbType) {
-		cmd.exitValue = exitFailure
-		fmt.Fprintf(cmd.stderr, "%s: invalid argument for -type: %q\n", cmd.name, gbType)
-	}
-}
-
-func isValidDate(cmd *cmdEnv, gbDate string) {
-	if cmd.minNoOp() {
-		return
-	}
-
-	if _, err := time.Parse("20060102", gbDate); err != nil {
-		cmd.exitValue = exitFailure
-		fmt.Fprintf(cmd.stderr, "%s: invalid argument for -date: %q\n", cmd.name, gbDate)
 	}
 }
 

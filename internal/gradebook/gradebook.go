@@ -51,8 +51,8 @@ type CategoriesByAssignmentType map[string]string
 
 // Grade represents a single grade
 type Grade struct {
-	Score *float64
-	Email string
+	Email string   `json:"email"`
+	Score *float64 `json:"score"`
 }
 
 // Grades stores Grade structs.

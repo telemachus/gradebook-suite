@@ -2,7 +2,6 @@ package cli
 
 import (
 	"fmt"
-	"slices"
 	"strings"
 
 	"github.com/telemachus/gradebook-suite/internal/gradebook"
@@ -30,17 +29,6 @@ func (cmd *cmdEnv) displayEmails(class *gradebook.Class) {
 		return
 	}
 
-	emails := make([]string, 0, len(class.StudentsByEmail))
-	for email := range class.StudentsByEmail {
-		emails = append(emails, email)
-	}
-
-	slices.SortFunc(emails, func(emailA, emailB string) int {
-		studentA := class.StudentsByEmail[emailA]
-		studentB := class.StudentsByEmail[emailB]
-
-		return cmpStudent(studentA, studentB)
-	})
-
+	emails := class.EmailsSortedByStudentName()
 	fmt.Fprintln(cmd.stdout, strings.Join(emails, "\n"))
 }

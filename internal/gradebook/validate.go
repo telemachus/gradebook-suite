@@ -3,10 +3,11 @@ package gradebook
 import (
 	"errors"
 	"fmt"
+	"maps"
+	"slices"
 	"strings"
 
 	"github.com/telemachus/gradebook-suite/internal/gradebook/internal/set"
-	"golang.org/x/exp/maps"
 )
 
 func zvalErr(zvals []string) error {
@@ -77,9 +78,11 @@ func checkEq[T comparable](lhs, rhs set.Set[T]) error {
 // individual checks. Those errors are combined using errors.Join.
 func (c *Class) Validate() error {
 	assignmentsSet := set.New(c.AssignmentCategories...)
-	categoriesSet := set.New(maps.Values(c.CategoriesByAssignmentType)...)
-	weightsSet := set.New(maps.Keys(c.WeightsByAssignmentCategory)...)
-	labelsSet := set.New(maps.Keys(c.LabelsByAssignmentCategory)...)
+	categoriesSet := set.New(slices.Collect(maps.Values(c.CategoriesByAssignmentType))...)
+	weightsSet := set.New(slices.Collect(maps.Keys(c.WeightsByAssignmentCategory))...)
+	labelsSet := set.New(slices.Collect(maps.Keys(c.LabelsByAssignmentCategory))...)
+	// weightsSet := set.New(maps.Keys(c.WeightsByAssignmentCategory)...)
+	// labelsSet := set.New(maps.Keys(c.LabelsByAssignmentCategory)...)
 
 	return errors.Join(
 		c.checkInitialization(),
