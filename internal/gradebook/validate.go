@@ -81,8 +81,6 @@ func (c *Class) Validate() error {
 	categoriesSet := set.New(slices.Collect(maps.Values(c.CategoriesByAssignmentType))...)
 	weightsSet := set.New(slices.Collect(maps.Keys(c.WeightsByAssignmentCategory))...)
 	labelsSet := set.New(slices.Collect(maps.Keys(c.LabelsByAssignmentCategory))...)
-	// weightsSet := set.New(maps.Keys(c.WeightsByAssignmentCategory)...)
-	// labelsSet := set.New(maps.Keys(c.LabelsByAssignmentCategory)...)
 
 	return errors.Join(
 		c.checkInitialization(),
