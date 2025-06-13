@@ -190,12 +190,16 @@ func (c *Class) loadGradebookFile(gradebookPath string) error {
 			return fmt.Errorf("no student with email %q", grade.Email)
 		}
 
-		_, ok = student.GradesByCategory[assignmentType]
+		category, ok := c.CategoriesByAssignmentType[assignmentType]
 		if !ok {
 			return fmt.Errorf("unrecognized assignment type %q", assignmentType)
 		}
+		_, ok = student.GradesByCategory[category]
+		if !ok {
+			return fmt.Errorf("unrecognized assignment category %q", category)
+		}
 
-		student.GradesByCategory[assignmentType] = append(student.GradesByCategory[assignmentType], *grade.Score)
+		student.GradesByCategory[category] = append(student.GradesByCategory[category], *grade.Score)
 	}
 
 	return nil

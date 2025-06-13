@@ -143,7 +143,13 @@ func (cmd *cmdEnv) unmarshalClass() *gradebook.Class {
 		return nil
 	}
 
-	class, err := gradebook.UnmarshalClass(cmd.classFile)
+	var class *gradebook.Class
+	var err error
+	if cmd.name == "gradebook-calculate" {
+		class, err = gradebook.UnmarshalCalcClass(cmd.classFile)
+	} else {
+		class, err = gradebook.UnmarshalClass(cmd.classFile)
+	}
 	if err != nil {
 		cmd.exitValue = exitFailure
 		fmt.Fprintf(cmd.stderr, "%s: %s\n", cmd.name, err)

@@ -255,3 +255,71 @@ func TestEmailsSortedByStudentName(t *testing.T) {
 		})
 	}
 }
+
+func TestAssignmentCategoriesSortedByLabel(t *testing.T) {
+	t.Parallel()
+
+	tests := map[string]struct {
+		categories gradebook.AssignmentCategories
+		labels     gradebook.LabelsByAssignmentCategory
+		want       []string
+	}{
+		"empty categories returns empty slice": {
+			categories: gradebook.AssignmentCategories{},
+			labels:     gradebook.LabelsByAssignmentCategory{},
+			want:       []string{},
+		},
+		"single category returns single category": {
+			categories: gradebook.AssignmentCategories{"major"},
+			labels: gradebook.LabelsByAssignmentCategory{
+				"major": "Major Assessments",
+			},
+			want: []string{"major"},
+		},
+		"multiple categories sorted by label": {
+			categories: gradebook.AssignmentCategories{"major", "cp", "minor"},
+			labels: gradebook.LabelsByAssignmentCategory{
+				"major": "Major Assessments",
+				"minor": "Daily Work",
+				"cp":    "Class Participation",
+			},
+			want: []string{"cp", "minor", "major"},
+		},
+		"categories with same label prefix sorted alphabetically": {
+			categories: gradebook.AssignmentCategories{"quiz", "exam", "project"},
+			labels: gradebook.LabelsByAssignmentCategory{
+				"quiz":    "Assessment: Quiz",
+				"exam":    "Assessment: Exam",
+				"project": "Assessment: Project",
+			},
+			want: []string{"exam", "project", "quiz"},
+		},
+		"mixed label sorting": {
+			categories: gradebook.AssignmentCategories{"final", "hw", "participation", "midterm"},
+			labels: gradebook.LabelsByAssignmentCategory{
+				"final":         "Final Exam",
+				"hw":            "Homework",
+				"participation": "Class Participation",
+				"midterm":       "Midterm Exam",
+			},
+			want: []string{"participation", "final", "hw", "midterm"},
+		},
+	}
+
+	for name, tt := range tests {
+		t.Run(name, func(t *testing.T) {
+			t.Parallel()
+
+			class := &gradebook.Class{
+				AssignmentCategories:       tt.categories,
+				LabelsByAssignmentCategory: tt.labels,
+			}
+
+			got := class.AssignmentCategoriesSortedByLabel()
+
+			if diff := cmp.Diff(tt.want, got); diff != "" {
+				t.Errorf("AssignmentCategoriesSortedByLabel() mismatch (-want +got):\n%s", diff)
+			}
+		})
+	}
+}

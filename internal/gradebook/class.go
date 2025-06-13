@@ -6,6 +6,23 @@ import (
 	"slices"
 )
 
+// AssignmentCategoriesSortedByLabel returns a slice of categories sorted by label.
+func (c *Class) AssignmentCategoriesSortedByLabel() []string {
+	if len(c.AssignmentCategories) == 0 {
+		return []string{}
+	}
+
+	categories := slices.Clone(c.AssignmentCategories)
+	slices.SortFunc(categories, func(catA, catB string) int {
+		labelA := c.LabelsByAssignmentCategory[catA]
+		labelB := c.LabelsByAssignmentCategory[catB]
+
+		return cmp.Compare(labelA, labelB)
+	})
+
+	return categories
+}
+
 // EmailsSortedByStudentName returns a slice of student emails sorted by student name.
 func (c *Class) EmailsSortedByStudentName() []string {
 	if len(c.StudentsByEmail) == 0 {
@@ -16,6 +33,7 @@ func (c *Class) EmailsSortedByStudentName() []string {
 	slices.SortFunc(emails, func(emailA, emailB string) int {
 		studentA := c.StudentsByEmail[emailA]
 		studentB := c.StudentsByEmail[emailB]
+
 		return cmpStudent(studentA, studentB)
 	})
 
@@ -29,6 +47,7 @@ func (c *Class) StudentsSortedByName() []*Student {
 		students = append(students, student)
 	}
 	slices.SortFunc(students, cmpStudent)
+
 	return students
 }
 

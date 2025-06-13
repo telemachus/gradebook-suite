@@ -2,6 +2,7 @@ package gradebook
 
 import (
 	"fmt"
+	"math"
 	"strconv"
 )
 
@@ -15,7 +16,7 @@ type AverageResult struct {
 // String returns a string representation of an AverageResult.
 func (ar AverageResult) String() string {
 	if ar.Valid {
-		return strconv.FormatFloat(ar.Value, 'g', -1, 64)
+		return strconv.FormatFloat(math.Round(ar.Value), 'f', 0, 64)
 	}
 
 	return "No results"

@@ -1,5 +1,5 @@
 {
-    "assignment_category": "test",
+    "assignment_category": "major",
     "assignment_date": "20240415",
     "assignment_grades": [
         {
@@ -24,5 +24,5 @@
         }
     ],
     "assignment_name": "april",
-    "assignment_type": "major"
+    "assignment_type": "test"
 }
