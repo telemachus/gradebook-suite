@@ -350,10 +350,7 @@ func TestStudentAverage(t *testing.T) {
 		"major": make([]float64, 0),
 	}
 
-	result, err := student.Average("major")
-	if err != nil {
-		t.Fatalf("Average(major) returned error: %v", err)
-	}
+	result := student.Average("major")
 	if result.Valid {
 		t.Error("Average(major) with no grades should return Valid=false")
 	}
@@ -361,10 +358,7 @@ func TestStudentAverage(t *testing.T) {
 	grades := []float64{85, 90, 95}
 	student.GradesByCategory["major"] = append(student.GradesByCategory["major"], grades...)
 
-	result, err = student.Average("major")
-	if err != nil {
-		t.Fatalf("Average(major) returned error: %v", err)
-	}
+	result = student.Average("major")
 	if !result.Valid {
 		t.Error("Average(major) with grades should return Valid=true")
 	}
@@ -385,11 +379,6 @@ func TestStudentAverageInvalidCategory(t *testing.T) {
 
 	student.GradesByCategory = map[string][]float64{
 		"major": make([]float64, 0),
-	}
-
-	_, err = student.Average("nonexistent")
-	if err == nil {
-		t.Error("Average(nonexistent) should return error; got nil")
 	}
 }
 
@@ -413,10 +402,7 @@ func TestStudentTotalAverage(t *testing.T) {
 		"cp":    20,
 	}
 
-	result, err := student.TotalAverage(weights)
-	if err != nil {
-		t.Fatalf("TotalAverage() returned error: %v", err)
-	}
+	result := student.TotalAverage(weights)
 	if result.Valid {
 		t.Error("TotalAverage() with no grades should return Valid=false")
 	}
@@ -425,10 +411,7 @@ func TestStudentTotalAverage(t *testing.T) {
 	student.GradesByCategory["minor"] = append(student.GradesByCategory["minor"], 90)
 	student.GradesByCategory["cp"] = append(student.GradesByCategory["cp"], 90)
 
-	result, err = student.TotalAverage(weights)
-	if err != nil {
-		t.Fatalf("TotalAverage() returned error: %v", err)
-	}
+	result = student.TotalAverage(weights)
 	if !result.Valid {
 		t.Error("TotalAverage() with grades should return Valid=true")
 	}
@@ -444,10 +427,7 @@ func TestStudentTotalAverage(t *testing.T) {
 		"cp":    {75},
 	}
 
-	result, err = student.TotalAverage(weights)
-	if err != nil {
-		t.Fatalf("TotalAverage() returned error: %v", err)
-	}
+	result = student.TotalAverage(weights)
 	if !result.Valid {
 		t.Error("TotalAverage() with grades should return Valid=true")
 	}
@@ -478,10 +458,7 @@ func TestStudentTotalAveragePartialGrades(t *testing.T) {
 		"cp":    20,
 	}
 
-	result, err := student.TotalAverage(weights)
-	if err != nil {
-		t.Fatalf("TotalAverage() returned error: %v", err)
-	}
+	result := student.TotalAverage(weights)
 	if !result.Valid {
 		t.Error("TotalAverage() with partial grades should return Valid=true")
 	}
@@ -504,10 +481,7 @@ func TestStudentAverageMultipleGrades(t *testing.T) {
 		"major": {88, 92, 85, 95},
 	}
 
-	result, err := student.Average("major")
-	if err != nil {
-		t.Fatalf("Average(major) returned error: %v", err)
-	}
+	result := student.Average("major")
 	if !result.Valid {
 		t.Error("Average(major) with grades should return Valid=true")
 	}

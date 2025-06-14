@@ -196,7 +196,7 @@ func (c *Class) loadGradebookFile(gradebookPath string) error {
 		}
 		_, ok = student.GradesByCategory[category]
 		if !ok {
-			return fmt.Errorf("unrecognized assignment category %q", category)
+			return fmt.Errorf("unrecognized assignment category %q (for type %q)", category, assignmentType)
 		}
 
 		student.GradesByCategory[category] = append(student.GradesByCategory[category], *grade.Score)

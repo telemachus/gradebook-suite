@@ -19,7 +19,8 @@ func GradebookCalculate(args []string) int {
 
 	cmd.resolvePaths()
 	class := cmd.unmarshalClass()
-	cmd.calculateAndDisplay(term, class)
+	cmd.loadGrades(term, class)
+	cmd.displayAll(class)
 
 	return cmd.exitValue
 }
@@ -45,42 +46,31 @@ func (cmd *cmdEnv) parseCalculate(args []string) ([]string, string) {
 	return og.Args(), term
 }
 
-func (cmd *cmdEnv) calculateAndDisplay(term string, class *gradebook.Class) {
+func (cmd *cmdEnv) loadGrades(term string, class *gradebook.Class) {
 	if cmd.noOp() {
 		return
 	}
 
-	if err := class.LoadGrades(cmd.directory, class.TermsByID[term]); err != nil {
+	err := class.LoadGrades(cmd.directory, class.TermsByID[term])
+	if err != nil {
 		cmd.exitValue = exitFailure
 		fmt.Fprintf(cmd.stderr, "%s: %s\n", cmd.name, err)
+	}
+}
 
+func (cmd *cmdEnv) displayAll(class *gradebook.Class) {
+	if cmd.noOp() {
 		return
 	}
 
 	students := class.StudentsSortedByName()
 	for _, s := range students {
 		fmt.Fprintf(cmd.stdout, "%s %s\n", s.FirstName, s.LastName)
-		totalAvg, err := s.TotalAverage(class.WeightsByAssignmentCategory)
-		if err != nil {
-			fmt.Fprintf(cmd.stderr, "\t%s: problem calculating total average: %s\n", cmd.name, err)
 
-			return
-		}
-
-		fmt.Fprintf(cmd.stdout, "\tOverall average: %s\n", totalAvg)
+		fmt.Fprintf(cmd.stdout, "\tOverall average: %s\n", s.TotalAverage(class.WeightsByAssignmentCategory))
 
 		for _, cat := range class.AssignmentCategoriesSortedByLabel() {
-			label := class.LabelsByAssignmentCategory[cat]
-
-			avg, err := s.Average(cat)
-			if err != nil {
-				fmt.Fprintf(cmd.stderr, "\t%s: problem calculating %s: %s\n", cmd.name, label, err)
-
-				return
-			}
-
-			fmt.Fprintf(cmd.stdout, "\t%s: %s\n", label, avg)
-
+			fmt.Fprintf(cmd.stdout, "\t%s: %s\n", class.LabelsByAssignmentCategory[cat], s.Average(cat))
 		}
 	}
 }
