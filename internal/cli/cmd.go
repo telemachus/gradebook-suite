@@ -52,18 +52,7 @@ func cmdFromWithWriters(name, usage, version string, stdout, stderr io.Writer) *
 }
 
 func (cmd *cmdEnv) parse(args []string) []string {
-	og := opts.NewGroup(cmd.name)
-	og.String(&cmd.classFile, "class", "class.json")
-	og.String(&cmd.directory, "directory", "")
-	og.Bool(&cmd.helpWanted, "help")
-	og.Bool(&cmd.helpWanted, "h")
-	og.Bool(&cmd.versionWanted, "version")
-
-	// TODO: add switch here for additional flags for gb-calc.
-	switch cmd.name {
-	case "gradebook-names":
-		og.Bool(&cmd.lastFirst, "last-first")
-	}
+	og := cmd.commonOptsGroup()
 
 	if err := og.Parse(args); err != nil {
 		cmd.exitValue = exitFailure
@@ -75,10 +64,20 @@ func (cmd *cmdEnv) parse(args []string) []string {
 	return og.Args()
 }
 
-type newCfg struct {
-	gbName string
-	gbType string
-	gbDate string
+func (cmd *cmdEnv) commonOptsGroup() *opts.Group {
+	og := opts.NewGroup(cmd.name)
+	og.String(&cmd.classFile, "class", "class.json")
+	og.String(&cmd.directory, "directory", "")
+	og.Bool(&cmd.helpWanted, "help")
+	og.Bool(&cmd.helpWanted, "h")
+	og.Bool(&cmd.versionWanted, "version")
+
+	// This is hacky, but gradebook-names needs no other special handling.
+	if cmd.name == "gradebook-names" {
+		og.Bool(&cmd.lastFirst, "last-first")
+	}
+
+	return og
 }
 
 func (cmd *cmdEnv) check(extraArgs []string) {

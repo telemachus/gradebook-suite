@@ -4,7 +4,6 @@ import (
 	"fmt"
 
 	"github.com/telemachus/gradebook-suite/internal/gradebook"
-	"github.com/telemachus/gradebook-suite/internal/opts"
 )
 
 var calculateUsage = "usage: gradebook-calculate: TODO"
@@ -26,12 +25,7 @@ func GradebookCalculate(args []string) int {
 }
 
 func (cmd *cmdEnv) parseCalculate(args []string) ([]string, string) {
-	og := opts.NewGroup(cmd.name)
-	og.String(&cmd.classFile, "class", "class.json")
-	og.String(&cmd.directory, "directory", "")
-	og.Bool(&cmd.helpWanted, "help")
-	og.Bool(&cmd.helpWanted, "h")
-	og.Bool(&cmd.versionWanted, "version")
+	og := cmd.commonOptsGroup()
 
 	term := ""
 	og.String(&term, "term", "")

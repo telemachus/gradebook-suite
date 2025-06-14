@@ -11,7 +11,6 @@ import (
 	"time"
 
 	"github.com/telemachus/gradebook-suite/internal/gradebook"
-	"github.com/telemachus/gradebook-suite/internal/opts"
 )
 
 var newUsage = "usage: gradebook-new: TODO"
@@ -32,13 +31,14 @@ func GradebookNew(args []string) int {
 	return cmd.exitValue
 }
 
+type newCfg struct {
+	gbName string
+	gbType string
+	gbDate string
+}
+
 func (cmd *cmdEnv) parseNew(args []string) ([]string, newCfg) {
-	og := opts.NewGroup(cmd.name)
-	og.String(&cmd.classFile, "class", "class.json")
-	og.String(&cmd.directory, "directory", "")
-	og.Bool(&cmd.helpWanted, "help")
-	og.Bool(&cmd.helpWanted, "h")
-	og.Bool(&cmd.versionWanted, "version")
+	og := cmd.commonOptsGroup()
 
 	var cfg newCfg
 	og.String(&cfg.gbName, "name", "")
