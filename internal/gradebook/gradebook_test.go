@@ -241,7 +241,7 @@ func fakeGradebook() *gradebook.Gradebook {
 		AssignmentDate:     "20240319",
 		AssignmentName:     "golden",
 		AssignmentType:     "quiz",
-		Grades: gradebook.Grades{
+		AssignmentGrades: gradebook.Grades{
 			&gradebook.Grade{
 				Email: "gstriker@school.edu",
 				Score: floatPtr(94.2),

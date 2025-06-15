@@ -333,7 +333,7 @@ func TestCheckNew(t *testing.T) {
 				versionWanted: tt.versionWanted,
 			}
 
-			cmd.checkNew(tt.cfg, class)
+			cmd.checkNew(class, tt.cfg)
 
 			if cmd.exitValue != tt.wantExit {
 				t.Errorf("exitValue = %d; want %d", cmd.exitValue, tt.wantExit)

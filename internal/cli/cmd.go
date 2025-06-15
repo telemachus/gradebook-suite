@@ -151,7 +151,7 @@ func (cmd *cmdEnv) unmarshalClass() *gradebook.Class {
 	}
 	if err != nil {
 		cmd.exitValue = exitFailure
-		fmt.Fprintf(cmd.stderr, "%s: %s\n", cmd.name, err)
+		fmt.Fprintf(cmd.stderr, "%s: problem unmarshaling class: %s\n", cmd.name, err)
 
 		return nil
 	}

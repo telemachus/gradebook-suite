@@ -64,7 +64,7 @@ type Gradebook struct {
 	AssignmentName     string `json:"assignment_name"`
 	AssignmentType     string `json:"assignment_type"`
 	AssignmentCategory string `json:"assignment_category"`
-	Grades             `json:"assignment_grades"`
+	AssignmentGrades   Grades `json:"assignment_grades"`
 }
 
 // Student represents a student.
@@ -180,7 +180,7 @@ func (c *Class) loadGradebookFile(gradebookPath string) error {
 	}
 
 	assignmentType := gbData.AssignmentType
-	for _, grade := range gbData.Grades {
+	for _, grade := range gbData.AssignmentGrades {
 		if grade.Score == nil {
 			continue
 		}

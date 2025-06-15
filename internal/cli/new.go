@@ -25,8 +25,8 @@ func GradebookNew(args []string) int {
 
 	cmd.resolvePaths()
 	class := cmd.unmarshalClass()
-	cmd.checkNew(gbCfg, class)
-	cmd.newGradebook(gbCfg, class)
+	cmd.checkNew(class, gbCfg)
+	cmd.newGradebook(class, gbCfg)
 
 	return cmd.exitValue
 }
@@ -60,7 +60,7 @@ func (cmd *cmdEnv) parseNew(args []string) ([]string, newCfg) {
 	return og.Args(), cfg
 }
 
-func (cmd *cmdEnv) checkNew(cfg newCfg, class *gradebook.Class) {
+func (cmd *cmdEnv) checkNew(class *gradebook.Class, cfg newCfg) {
 	if cmd.noOp() {
 		return
 	}
@@ -70,7 +70,7 @@ func (cmd *cmdEnv) checkNew(cfg newCfg, class *gradebook.Class) {
 	isValidDate(cmd, cfg.gbDate)
 }
 
-func (cmd *cmdEnv) newGradebook(cfg newCfg, class *gradebook.Class) {
+func (cmd *cmdEnv) newGradebook(class *gradebook.Class, cfg newCfg) {
 	if cmd.noOp() {
 		return
 	}
@@ -86,7 +86,7 @@ func (cmd *cmdEnv) newGradebook(cfg newCfg, class *gradebook.Class) {
 		AssignmentDate:     cfg.gbDate,
 		AssignmentName:     cfg.gbName,
 		AssignmentType:     cfg.gbType,
-		Grades:             grades,
+		AssignmentGrades:   grades,
 	}
 
 	gbData, err := json.MarshalIndent(newGb, "", "    ")

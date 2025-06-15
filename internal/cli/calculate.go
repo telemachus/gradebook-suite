@@ -18,7 +18,8 @@ func GradebookCalculate(args []string) int {
 
 	cmd.resolvePaths()
 	class := cmd.unmarshalClass()
-	cmd.loadGrades(term, class)
+	cmd.findTerm(class, term)
+	cmd.loadGrades(class, term)
 	cmd.displayAll(class)
 
 	return cmd.exitValue
@@ -40,7 +41,18 @@ func (cmd *cmdEnv) parseCalculate(args []string) ([]string, string) {
 	return og.Args(), term
 }
 
-func (cmd *cmdEnv) loadGrades(term string, class *gradebook.Class) {
+func (cmd *cmdEnv) findTerm(class *gradebook.Class, term string) {
+	if cmd.noOp() || term == "" {
+		return
+	}
+
+	if _, ok := class.TermsByID[term]; !ok {
+		cmd.exitValue = exitFailure
+		fmt.Fprintf(cmd.stderr, "%s: %q is not a valid term\n", cmd.name, term)
+	}
+}
+
+func (cmd *cmdEnv) loadGrades(class *gradebook.Class, term string) {
 	if cmd.noOp() {
 		return
 	}
