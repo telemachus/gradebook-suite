@@ -8,5 +8,5 @@ import (
 )
 
 func main() {
-	os.Exit(cli.GradebookCalculate(os.Args[1:]))
+	os.Exit(cli.GradebookCalc(os.Args[1:]))
 }

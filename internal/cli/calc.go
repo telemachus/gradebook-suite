@@ -6,11 +6,9 @@ import (
 	"github.com/telemachus/gradebook-suite/internal/gradebook"
 )
 
-var calculateUsage = "usage: gradebook-calculate: TODO"
-
-// GradebookCalculate calculates and displays the grades for a class.
-func GradebookCalculate(args []string) int {
-	cmd := cmdFrom("gradebook-calculate", calculateUsage, suiteVersion)
+// GradebookCalc calculates and prints the grades for a class.
+func GradebookCalc(args []string) int {
+	cmd := cmdFrom("gradebook-calculate", calcUsage, suiteVersion)
 
 	extraArgs, term := cmd.parseCalculate(args)
 	cmd.check(extraArgs)
@@ -20,7 +18,7 @@ func GradebookCalculate(args []string) int {
 	class := cmd.unmarshalClass()
 	cmd.findTerm(class, term)
 	cmd.loadGrades(class, term)
-	cmd.displayAll(class)
+	cmd.printAll(class)
 
 	return cmd.exitValue
 }
@@ -64,7 +62,7 @@ func (cmd *cmdEnv) loadGrades(class *gradebook.Class, term string) {
 	}
 }
 
-func (cmd *cmdEnv) displayAll(class *gradebook.Class) {
+func (cmd *cmdEnv) printAll(class *gradebook.Class) {
 	if cmd.noOp() {
 		return
 	}

@@ -6,10 +6,8 @@ import (
 	"github.com/telemachus/gradebook-suite/internal/gradebook"
 )
 
-var namesUsage = "usage: gradebook-names: TODO"
-
-// GradebookNames displays the names of students in a class. The default
-// display is "FirstName LastName", but the user can opt for "LastName,
+// GradebookNames prints the names of students in a class. The default
+// output is "FirstName LastName", but the user can opt for "LastName,
 // FirstName" instead.
 func GradebookNames(args []string) int {
 	cmd := cmdFrom("gradebook-names", namesUsage, suiteVersion)
@@ -20,12 +18,12 @@ func GradebookNames(args []string) int {
 
 	cmd.resolvePaths()
 	class := cmd.unmarshalClass()
-	cmd.displayNames(class)
+	cmd.printNames(class)
 
 	return cmd.exitValue
 }
 
-func (cmd *cmdEnv) displayNames(class *gradebook.Class) {
+func (cmd *cmdEnv) printNames(class *gradebook.Class) {
 	if cmd.noOp() {
 		return
 	}

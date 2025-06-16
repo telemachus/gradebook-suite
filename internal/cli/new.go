@@ -13,8 +13,6 @@ import (
 	"github.com/telemachus/gradebook-suite/internal/gradebook"
 )
 
-var newUsage = "usage: gradebook-new: TODO"
-
 // GradebookNew creates a new gradebook file for a class.
 func GradebookNew(args []string) int {
 	cmd := cmdFrom("gradebook-new", newUsage, suiteVersion)
