@@ -18,18 +18,16 @@ var junk = strings.Join([]string{
 }, "")
 
 func isValidName(name string) bool {
-	var (
-		isEmpty = name == ""
-		hasJunk = strings.ContainsAny(name, junk)
-		isValid = !isEmpty && !hasJunk
-	)
+	isEmpty := name == ""
+	hasJunk := strings.ContainsAny(name, junk)
+	isValid := !isEmpty && !hasJunk
 
 	return isValid
 }
 
 func validateName(funcName, optName string) error {
 	if valid := isValidName(optName); !valid {
-		return fmt.Errorf("opts: %s: invalid opt name: %s", funcName, optName)
+		return fmt.Errorf("opt: %s: invalid name: %s", funcName, optName)
 	}
 
 	return nil
@@ -37,7 +35,8 @@ func validateName(funcName, optName string) error {
 
 func (g *Group) optAlreadySet(name string) error {
 	if _, exists := g.opts[name]; exists {
-		return fmt.Errorf("opts: --%s already set", name)
+		// TODO: quote the option?
+		return fmt.Errorf("opt: --%s already set", name)
 	}
 
 	return nil

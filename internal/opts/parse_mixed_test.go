@@ -7,7 +7,7 @@ import (
 	"github.com/telemachus/gradebook-suite/internal/opts"
 )
 
-func TestParseMultipleDifferentFlags(t *testing.T) {
+func TestParseMultipleDifferentOptions(t *testing.T) {
 	t.Parallel()
 
 	testCases := map[string]struct {

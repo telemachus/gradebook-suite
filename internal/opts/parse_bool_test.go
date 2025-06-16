@@ -20,7 +20,7 @@ func TestParseBool(t *testing.T) {
 			postArgs: []string{},
 			want:     true,
 		},
-		"args after flag; one dash": {
+		"args after option; single dash": {
 			args:     []string{"-v", "foo", "bar"},
 			postArgs: []string{"foo", "bar"},
 			want:     true,
@@ -30,7 +30,7 @@ func TestParseBool(t *testing.T) {
 			postArgs: []string{},
 			want:     true,
 		},
-		"args after flag; two dashes": {
+		"args after option; two dashes": {
 			args:     []string{"--verbose", "foo", "bar"},
 			postArgs: []string{"foo", "bar"},
 			want:     true,

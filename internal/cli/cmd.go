@@ -67,7 +67,7 @@ func (cmd *cmdEnv) parse(args []string) []string {
 func (cmd *cmdEnv) commonOptsGroup() *opts.Group {
 	og := opts.NewGroup(cmd.name)
 	og.String(&cmd.classFile, "class", "class.json")
-	og.String(&cmd.directory, "directory", "")
+	og.StringZero(&cmd.directory, "directory")
 	og.Bool(&cmd.helpWanted, "help")
 	og.Bool(&cmd.helpWanted, "h")
 	og.Bool(&cmd.versionWanted, "version")

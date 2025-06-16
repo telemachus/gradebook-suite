@@ -4,24 +4,20 @@ import (
 	"fmt"
 )
 
-type boolValue bool
-
-func newBoolValue(val bool, p *bool) *boolValue {
-	*p = val
-	return (*boolValue)(p)
-}
-
-// Bool creates a new boolean option with the default value and binds that option
-// to b. Bool will panic if name is not a valid option name or if name repeats
-// the name of an existing flag.
+// Bool defines a bool option with the specified name and a value of false. The
+// argument b points to a bool variable to hold the value of the option. Bool
+// will panic if name is not valid or repeats an existing option.
 func (g *Group) Bool(b *bool, name string) {
 	if err := validateName("Bool", name); err != nil {
 		panic(err)
 	}
 
-	bv := newBoolValue(false, b)
+	*b = false
 	opt := &Opt{
-		value:    bv,
+		value: &value[bool]{
+			ptr:    b,
+			parser: parseBool,
+		},
 		defValue: "false",
 		name:     name,
 		isBool:   true,
@@ -42,19 +38,4 @@ func parseBool(s string) (bool, error) {
 	default:
 		return false, fmt.Errorf("cannot parse %q", s)
 	}
-}
-
-// TODO: restrict valid boolean values to "true" and "false"?
-// Set assigns s to an boolValue and returns an error if s cannot be parsed as
-// a boolean. Valid boolean values are 1, 0, t, f, T, F, true, false, TRUE,
-// FALSE, True, False.
-func (b *boolValue) set(s string) error {
-	v, err := parseBool(s)
-	if err != nil {
-		return err
-	}
-
-	*b = boolValue(v)
-
-	return nil
 }
