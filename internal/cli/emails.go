@@ -4,12 +4,10 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/telemachus/gradebook-suite/internal/gradebook"
+	"github.com/telemachus/gradebook"
 )
 
-var emailsUsage = "usage: gradebook-emails: TODO"
-
-// GradebookEmails displays the emails of students in a class.
+// GradebookEmails prints the emails of students in a class.
 func GradebookEmails(args []string) int {
 	cmd := cmdFrom("gradebook-emails", emailsUsage, suiteVersion)
 
@@ -19,12 +17,12 @@ func GradebookEmails(args []string) int {
 
 	cmd.resolvePaths()
 	class := cmd.unmarshalClass()
-	cmd.displayEmails(class)
+	cmd.printEmails(class)
 
 	return cmd.exitValue
 }
 
-func (cmd *cmdEnv) displayEmails(class *gradebook.Class) {
+func (cmd *cmdEnv) printEmails(class *gradebook.Class) {
 	if cmd.noOp() {
 		return
 	}

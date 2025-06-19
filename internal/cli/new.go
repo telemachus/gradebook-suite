@@ -10,11 +10,8 @@ import (
 	"slices"
 	"time"
 
-	"github.com/telemachus/gradebook-suite/internal/gradebook"
-	"github.com/telemachus/gradebook-suite/internal/opts"
+	"github.com/telemachus/gradebook"
 )
-
-var newUsage = "usage: gradebook-new: TODO"
 
 // GradebookNew creates a new gradebook file for a class.
 func GradebookNew(args []string) int {
@@ -26,19 +23,20 @@ func GradebookNew(args []string) int {
 
 	cmd.resolvePaths()
 	class := cmd.unmarshalClass()
-	cmd.checkNew(gbCfg, class)
-	cmd.newGradebook(gbCfg, class)
+	cmd.checkNew(class, gbCfg)
+	cmd.newGradebook(class, gbCfg)
 
 	return cmd.exitValue
 }
 
+type newCfg struct {
+	gbName string
+	gbType string
+	gbDate string
+}
+
 func (cmd *cmdEnv) parseNew(args []string) ([]string, newCfg) {
-	og := opts.NewGroup(cmd.name)
-	og.String(&cmd.classFile, "class", "class.json")
-	og.String(&cmd.directory, "directory", "")
-	og.Bool(&cmd.helpWanted, "help")
-	og.Bool(&cmd.helpWanted, "h")
-	og.Bool(&cmd.versionWanted, "version")
+	og := cmd.commonOptsGroup()
 
 	var cfg newCfg
 	og.String(&cfg.gbName, "name", "")
@@ -60,7 +58,7 @@ func (cmd *cmdEnv) parseNew(args []string) ([]string, newCfg) {
 	return og.Args(), cfg
 }
 
-func (cmd *cmdEnv) checkNew(cfg newCfg, class *gradebook.Class) {
+func (cmd *cmdEnv) checkNew(class *gradebook.Class, cfg newCfg) {
 	if cmd.noOp() {
 		return
 	}
@@ -70,7 +68,7 @@ func (cmd *cmdEnv) checkNew(cfg newCfg, class *gradebook.Class) {
 	isValidDate(cmd, cfg.gbDate)
 }
 
-func (cmd *cmdEnv) newGradebook(cfg newCfg, class *gradebook.Class) {
+func (cmd *cmdEnv) newGradebook(class *gradebook.Class, cfg newCfg) {
 	if cmd.noOp() {
 		return
 	}
@@ -86,7 +84,7 @@ func (cmd *cmdEnv) newGradebook(cfg newCfg, class *gradebook.Class) {
 		AssignmentDate:     cfg.gbDate,
 		AssignmentName:     cfg.gbName,
 		AssignmentType:     cfg.gbType,
-		Grades:             grades,
+		AssignmentGrades:   grades,
 	}
 
 	gbData, err := json.MarshalIndent(newGb, "", "    ")

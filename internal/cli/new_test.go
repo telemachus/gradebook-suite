@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"testing"
 
-	"github.com/telemachus/gradebook-suite/internal/gradebook"
+	"github.com/telemachus/gradebook"
 )
 
 func TestIsValidName(t *testing.T) {
@@ -333,7 +333,7 @@ func TestCheckNew(t *testing.T) {
 				versionWanted: tt.versionWanted,
 			}
 
-			cmd.checkNew(tt.cfg, class)
+			cmd.checkNew(class, tt.cfg)
 
 			if cmd.exitValue != tt.wantExit {
 				t.Errorf("exitValue = %d; want %d", cmd.exitValue, tt.wantExit)

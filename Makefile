@@ -8,7 +8,7 @@ fmt:
 
 lint: fmt
 	staticcheck ./...
-	revive -config revive.toml -exclude internal/flag ./...
+	revive -config revive.toml ./...
 	golangci-lint run
 
 golangci: fmt
@@ -22,18 +22,12 @@ revive: fmt
 
 test:
 	go test -shuffle on github.com/telemachus/gradebook-suite/internal/cli
-	go test -shuffle on github.com/telemachus/gradebook-suite/internal/gradebook
-	go test -shuffle on github.com/telemachus/gradebook-suite/internal/opts
 
 testv:
 	go test -shuffle on -v github.com/telemachus/gradebook-suite/internal/cli
-	go test -shuffle on github.com/telemachus/gradebook-suite/internal/gradebook
-	go test -shuffle on -v github.com/telemachus/gradebook-suite/internal/opts
 
 testr:
 	go test -race -shuffle on github.com/telemachus/gradebook-suite/internal/cli
-	go test -shuffle on github.com/telemachus/gradebook-suite/internal/gradebook
-	go test -race -shuffle on github.com/telemachus/gradebook-suite/internal/opts
 
 build: lint testr
 	go build ./cmd/gradebook-calc

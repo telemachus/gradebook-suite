@@ -8,8 +8,8 @@ import (
 	"path/filepath"
 	"regexp"
 
-	"github.com/telemachus/gradebook-suite/internal/gradebook"
-	"github.com/telemachus/gradebook-suite/internal/opts"
+	"github.com/telemachus/gradebook"
+	"github.com/telemachus/opts"
 )
 
 const (
@@ -52,18 +52,7 @@ func cmdFromWithWriters(name, usage, version string, stdout, stderr io.Writer) *
 }
 
 func (cmd *cmdEnv) parse(args []string) []string {
-	og := opts.NewGroup(cmd.name)
-	og.String(&cmd.classFile, "class", "class.json")
-	og.String(&cmd.directory, "directory", "")
-	og.Bool(&cmd.helpWanted, "help")
-	og.Bool(&cmd.helpWanted, "h")
-	og.Bool(&cmd.versionWanted, "version")
-
-	// TODO: add switch here for additional flags for gb-calc.
-	switch cmd.name {
-	case "gradebook-names":
-		og.Bool(&cmd.lastFirst, "last-first")
-	}
+	og := cmd.commonOptsGroup()
 
 	if err := og.Parse(args); err != nil {
 		cmd.exitValue = exitFailure
@@ -75,10 +64,20 @@ func (cmd *cmdEnv) parse(args []string) []string {
 	return og.Args()
 }
 
-type newCfg struct {
-	gbName string
-	gbType string
-	gbDate string
+func (cmd *cmdEnv) commonOptsGroup() *opts.Group {
+	og := opts.NewGroup(cmd.name)
+	og.String(&cmd.classFile, "class", "class.json")
+	og.StringZero(&cmd.directory, "directory")
+	og.Bool(&cmd.helpWanted, "help")
+	og.Bool(&cmd.helpWanted, "h")
+	og.Bool(&cmd.versionWanted, "version")
+
+	// This is hacky, but gradebook-names needs no other special handling.
+	if cmd.name == "gradebook-names" {
+		og.Bool(&cmd.lastFirst, "last-first")
+	}
+
+	return og
 }
 
 func (cmd *cmdEnv) check(extraArgs []string) {
@@ -143,10 +142,16 @@ func (cmd *cmdEnv) unmarshalClass() *gradebook.Class {
 		return nil
 	}
 
-	class, err := gradebook.UnmarshalClass(cmd.classFile)
+	var class *gradebook.Class
+	var err error
+	if cmd.name == "gradebook-calculate" {
+		class, err = gradebook.UnmarshalCalcClass(cmd.classFile)
+	} else {
+		class, err = gradebook.UnmarshalClass(cmd.classFile)
+	}
 	if err != nil {
 		cmd.exitValue = exitFailure
-		fmt.Fprintf(cmd.stderr, "%s: %s\n", cmd.name, err)
+		fmt.Fprintf(cmd.stderr, "%s: problem unmarshaling class: %s\n", cmd.name, err)
 
 		return nil
 	}
