@@ -17,8 +17,7 @@ import (
 func GradebookNew(args []string) int {
 	cmd := cmdFrom("gradebook-new", newUsage, suiteVersion)
 
-	extraArgs, gbCfg := cmd.parseNew(args)
-	cmd.check(extraArgs)
+	gbCfg := cmd.parseNew(args)
 	cmd.printHelpOrVersion()
 
 	cmd.resolvePaths()
@@ -35,7 +34,7 @@ type newCfg struct {
 	gbDate string
 }
 
-func (cmd *cmdEnv) parseNew(args []string) ([]string, newCfg) {
+func (cmd *cmdEnv) parseNew(args []string) newCfg {
 	og := cmd.commonOptsGroup()
 
 	var cfg newCfg
@@ -46,8 +45,9 @@ func (cmd *cmdEnv) parseNew(args []string) ([]string, newCfg) {
 	if err := og.Parse(args); err != nil {
 		cmd.exitValue = exitFailure
 		fmt.Fprintf(cmd.stderr, "%s: %s\n", cmd.name, err)
+		fmt.Fprintln(cmd.stderr, cmd.usage)
 
-		return nil, cfg
+		return cfg
 	}
 
 	if cfg.gbDate == "" {
@@ -55,7 +55,7 @@ func (cmd *cmdEnv) parseNew(args []string) ([]string, newCfg) {
 		cfg.gbDate = now.Format("20060102")
 	}
 
-	return og.Args(), cfg
+	return cfg
 }
 
 func (cmd *cmdEnv) checkNew(class *gradebook.Class, cfg newCfg) {

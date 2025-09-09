@@ -1,3 +1,5 @@
+cloud.google.com/go v0.122.0 h1:0JTLGrcSIs3HIGsgVPvTx3cfyFSP/k9CI8vLPHTd6Wc=
+cloud.google.com/go v0.122.0/go.mod h1:xBoMV08QcqUGuPW65Qfm1o9Y4zKZBpGS+7bImXLTAZU=
 github.com/google/go-cmp v0.7.0 h1:wk8382ETsv4JYUZwIsn6YpYiWiBsYLSJiTsyBybVuN8=
 github.com/google/go-cmp v0.7.0/go.mod h1:pXiqmnSA92OHEEa9HXL2W4E7lf9JzCmGVUdgjX3N/iU=
 github.com/telemachus/gradebook v0.1.0 h1:kc8uUiAhfI5GVSq/usM2Qw0uEDddzqtOAgzlNpb/dIk=
@@ -6,3 +8,7 @@ github.com/telemachus/opts v0.0.0-20250616233249-165c751013cd h1:Y0yGS7OHCopfhFt
 github.com/telemachus/opts v0.0.0-20250616233249-165c751013cd/go.mod h1:zciITmmPLfwyvj9LhuXmG5XWGVjHEHnXOoqTKOF41NU=
 github.com/telemachus/opts v0.1.0 h1:F3/YC4afzFdJT6n5riUL1x1WLdk3OPCRBQShWxnN3bY=
 github.com/telemachus/opts v0.1.0/go.mod h1:zciITmmPLfwyvj9LhuXmG5XWGVjHEHnXOoqTKOF41NU=
+github.com/telemachus/opts v0.3.0 h1:XY6QPA2DoIWR/DluLHcUuIxVgOtgrq1/J9tbyMvZ8Dc=
+github.com/telemachus/opts v0.3.0/go.mod h1:1pIFFh/OQGNUGzAVGxC+W0Zt27g1qnoTmZDTeMS3PVQ=
+github.com/telemachus/opts v0.3.1-0.20250904115344-19b5ec1891f0 h1:/a8zGdbgj0CPqPiREvAbjq+QBQHUzJEr7tU0ZumR17U=
+github.com/telemachus/opts v0.3.1-0.20250904115344-19b5ec1891f0/go.mod h1:1pIFFh/OQGNUGzAVGxC+W0Zt27g1qnoTmZDTeMS3PVQ=

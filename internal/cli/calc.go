@@ -10,8 +10,7 @@ import (
 func GradebookCalc(args []string) int {
 	cmd := cmdFrom("gradebook-calculate", calcUsage, suiteVersion)
 
-	extraArgs, term := cmd.parseCalculate(args)
-	cmd.check(extraArgs)
+	term := cmd.parseCalculate(args)
 	cmd.printHelpOrVersion()
 
 	cmd.resolvePaths()
@@ -23,7 +22,7 @@ func GradebookCalc(args []string) int {
 	return cmd.exitValue
 }
 
-func (cmd *cmdEnv) parseCalculate(args []string) ([]string, string) {
+func (cmd *cmdEnv) parseCalculate(args []string) string {
 	og := cmd.commonOptsGroup()
 
 	term := ""
@@ -32,11 +31,12 @@ func (cmd *cmdEnv) parseCalculate(args []string) ([]string, string) {
 	if err := og.Parse(args); err != nil {
 		cmd.exitValue = exitFailure
 		fmt.Fprintf(cmd.stderr, "%s: %s\n", cmd.name, err)
+		fmt.Fprintln(cmd.stderr, cmd.usage)
 
-		return nil, ""
+		return ""
 	}
 
-	return og.Args(), term
+	return term
 }
 
 func (cmd *cmdEnv) findTerm(class *gradebook.Class, term string) {

@@ -11,8 +11,7 @@ import (
 func GradebookEmails(args []string) int {
 	cmd := cmdFrom("gradebook-emails", emailsUsage, suiteVersion)
 
-	extraArgs := cmd.parse(args)
-	cmd.check(extraArgs)
+	cmd.parse(args)
 	cmd.printHelpOrVersion()
 
 	cmd.resolvePaths()

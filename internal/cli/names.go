@@ -12,8 +12,7 @@ import (
 func GradebookNames(args []string) int {
 	cmd := cmdFrom("gradebook-names", namesUsage, suiteVersion)
 
-	extraArgs := cmd.parse(args)
-	cmd.check(extraArgs)
+	cmd.parse(args)
 	cmd.printHelpOrVersion()
 
 	cmd.resolvePaths()

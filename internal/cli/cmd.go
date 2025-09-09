@@ -51,23 +51,20 @@ func cmdFromWithWriters(name, usage, version string, stdout, stderr io.Writer) *
 	}
 }
 
-func (cmd *cmdEnv) parse(args []string) []string {
+func (cmd *cmdEnv) parse(args []string) {
 	og := cmd.commonOptsGroup()
 
 	if err := og.Parse(args); err != nil {
 		cmd.exitValue = exitFailure
 		fmt.Fprintf(cmd.stderr, "%s: %s\n", cmd.name, err)
-
-		return nil
+		fmt.Fprintln(cmd.stderr, cmd.usage)
 	}
-
-	return og.Args()
 }
 
 func (cmd *cmdEnv) commonOptsGroup() *opts.Group {
 	og := opts.NewGroup(cmd.name)
 	og.String(&cmd.classFile, "class", "class.json")
-	og.StringZero(&cmd.directory, "directory")
+	og.StringZero(&cmd.directory, "dir")
 	og.Bool(&cmd.helpWanted, "help")
 	og.Bool(&cmd.helpWanted, "h")
 	og.Bool(&cmd.versionWanted, "version")
@@ -78,24 +75,6 @@ func (cmd *cmdEnv) commonOptsGroup() *opts.Group {
 	}
 
 	return og
-}
-
-func (cmd *cmdEnv) check(extraArgs []string) {
-	if cmd.minNoOp() {
-		return
-	}
-
-	numExtraArgs := len(extraArgs)
-	if numExtraArgs != 0 {
-		cmd.exitValue = exitFailure
-
-		var s string
-		if numExtraArgs > 1 {
-			s = "s"
-		}
-
-		fmt.Fprintf(cmd.stderr, "%s: unrecognized argument%s: %+v\n", cmd.name, s, extraArgs)
-	}
 }
 
 func (cmd *cmdEnv) printHelpOrVersion() {
