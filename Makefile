@@ -36,10 +36,10 @@ build: lint testr
 	go build ./cmd/gradebook-new
 
 install: build
-	go build ./cmd/gradebook-calc
-	go build ./cmd/gradebook-emails
-	go build ./cmd/gradebook-names
-	go build ./cmd/gradebook-new
+	go install ./cmd/gradebook-calc
+	go install ./cmd/gradebook-emails
+	go install ./cmd/gradebook-names
+	go install ./cmd/gradebook-new
 
 clean:
 	rm -f gradebook-calc gradebook-emails gradebook-names gradebook-new
