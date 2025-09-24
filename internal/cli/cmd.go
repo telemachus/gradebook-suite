@@ -17,7 +17,7 @@ const (
 	exitFailure    = 1
 	suiteClassFile = "class.json"
 	suiteDirectory = "."
-	suiteVersion   = "v0.0.1"
+	suiteVersion   = "v20250924"
 )
 
 var invalidGbNameRegex = regexp.MustCompile(`[^A-Za-z0-9._-]`)

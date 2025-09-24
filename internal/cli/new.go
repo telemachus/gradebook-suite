@@ -74,9 +74,9 @@ func (cmd *cmdEnv) newGradebook(class *gradebook.Class, cfg newCfg) {
 	}
 
 	emails := class.EmailsSortedByStudentName()
-	grades := make(gradebook.Grades, 0, len(emails))
+	recs := make(gradebook.AssignmentRecords, 0, len(emails))
 	for _, email := range emails {
-		grades = append(grades, &gradebook.Grade{Email: email, Score: nil})
+		recs = append(recs, &gradebook.AssignmentRecord{Email: email, Grade: nil})
 	}
 
 	newGb := &gradebook.Gradebook{
@@ -84,7 +84,7 @@ func (cmd *cmdEnv) newGradebook(class *gradebook.Class, cfg newCfg) {
 		AssignmentDate:     cfg.gbDate,
 		AssignmentName:     cfg.gbName,
 		AssignmentType:     cfg.gbType,
-		AssignmentGrades:   grades,
+		AssignmentRecords:  recs,
 	}
 
 	gbData, err := json.MarshalIndent(newGb, "", "    ")
