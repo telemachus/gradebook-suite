@@ -55,4 +55,17 @@ options:
 general:
     -help         Print this message
     -version      Print version`
+
+	unscoredUsage = `usage: gradebook-unscored [-class CLASS -dir DIR -term TERM] [-help -version]
+
+Display how many unscored assignments each student has in each category.
+
+options:
+    -class CLASS  Class file to use (default: ./class.json)
+    -dir DIR      Directory for gradebook and class.json files (default: ".")
+    -term TERM    Limit calculation to grades in a given TERM
+
+general:
+    -help         Print this message
+    -version      Print version`
 )

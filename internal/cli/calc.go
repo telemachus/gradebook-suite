@@ -8,22 +8,21 @@ import (
 
 // GradebookCalc calculates and prints the grades for a class.
 func GradebookCalc(args []string) int {
-	cmd := cmdFrom("gradebook-calculate", calcUsage, suiteVersion)
+	cmd := cmdFrom("gradebook-calc", calcUsage)
 
-	term := cmd.parseCalculate(args)
-	cmd.printHelpOrVersion()
-
-	cmd.resolvePaths()
-	class := cmd.unmarshalClass()
-	cmd.findTerm(class, term)
-	cmd.loadGrades(class, term)
-	cmd.printAll(class)
-
-	return cmd.exitValue
+	return runCommand(cmd, args, commandRun[string]{
+		parse:     (*cmdEnv).parseCalculate,
+		loadClass: true,
+		action: func(cmd *cmdEnv, class *gradebook.Class, term string) {
+			cmd.findTerm(class, term)
+			cmd.loadGrades(class, term)
+			cmd.printAll(class)
+		},
+	})
 }
 
 func (cmd *cmdEnv) parseCalculate(args []string) string {
-	og := cmd.commonOptsGroup()
+	og := cmd.commonOptsGroup(parseOpts{})
 
 	term := ""
 	og.String(&term, "term", "")

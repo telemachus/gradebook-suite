@@ -17,7 +17,7 @@ const (
 	exitFailure    = 1
 	suiteClassFile = "class.json"
 	suiteDirectory = "."
-	suiteVersion   = "v20250924"
+	suiteVersion   = "v20260222"
 )
 
 var invalidGbNameRegex = regexp.MustCompile(`[^A-Za-z0-9._-]`)
@@ -36,23 +36,67 @@ type cmdEnv struct {
 	versionWanted bool
 }
 
-func cmdFrom(name, usage, version string) *cmdEnv {
-	return cmdFromWithWriters(name, usage, version, os.Stdout, os.Stderr)
+type parseOpts struct {
+	lastFirst bool
 }
 
-func cmdFromWithWriters(name, usage, version string, stdout, stderr io.Writer) *cmdEnv {
+type noArgs struct{}
+
+type commandRun[T any] struct {
+	parse     func(*cmdEnv, []string) T
+	action    func(*cmdEnv, *gradebook.Class, T)
+	loadClass bool
+}
+
+func cmdFrom(name, usage string) *cmdEnv {
+	return cmdFromWithWriters(name, usage, os.Stdout, os.Stderr)
+}
+
+func cmdFromWithWriters(name, usage string, stdout, stderr io.Writer) *cmdEnv {
 	return &cmdEnv{
 		exitValue: exitSuccess,
 		name:      name,
 		usage:     usage,
-		version:   version,
+		version:   suiteVersion,
 		stdout:    stdout,
 		stderr:    stderr,
 	}
 }
 
+func runCommand[T any](cmd *cmdEnv, args []string, runCfg commandRun[T]) int {
+	parsed := runCfg.parse(cmd, args)
+	cmd.printHelpOrVersion()
+	if runCfg.loadClass {
+		cmd.resolvePaths()
+		class := cmd.unmarshalClass()
+		runCfg.action(cmd, class, parsed)
+
+		return cmd.exitValue
+	}
+
+	runCfg.action(cmd, nil, parsed)
+
+	return cmd.exitValue
+}
+
 func (cmd *cmdEnv) parse(args []string) {
-	og := cmd.commonOptsGroup()
+	cmd.parseWithOpts(args, parseOpts{})
+}
+
+func (cmd *cmdEnv) parseNames(args []string) noArgs {
+	cmd.parseWithOpts(args, parseOpts{lastFirst: true})
+
+	return noArgs{}
+}
+
+func (cmd *cmdEnv) parseNoArgs(args []string) noArgs {
+	cmd.parse(args)
+
+	return noArgs{}
+}
+
+func (cmd *cmdEnv) parseWithOpts(args []string, parseCfg parseOpts) {
+	og := cmd.commonOptsGroup(parseCfg)
 
 	if err := og.Parse(args); err != nil {
 		cmd.exitValue = exitFailure
@@ -61,7 +105,7 @@ func (cmd *cmdEnv) parse(args []string) {
 	}
 }
 
-func (cmd *cmdEnv) commonOptsGroup() *opts.Group {
+func (cmd *cmdEnv) commonOptsGroup(parseCfg parseOpts) *opts.Group {
 	og := opts.NewGroup(cmd.name)
 	og.String(&cmd.classFile, "class", "class.json")
 	og.StringZero(&cmd.directory, "dir")
@@ -69,8 +113,7 @@ func (cmd *cmdEnv) commonOptsGroup() *opts.Group {
 	og.Bool(&cmd.helpWanted, "h")
 	og.Bool(&cmd.versionWanted, "version")
 
-	// This is hacky, but gradebook-names needs no other special handling.
-	if cmd.name == "gradebook-names" {
+	if parseCfg.lastFirst {
 		og.Bool(&cmd.lastFirst, "last-first")
 	}
 
@@ -121,16 +164,16 @@ func (cmd *cmdEnv) unmarshalClass() *gradebook.Class {
 		return nil
 	}
 
-	var class *gradebook.Class
-	var err error
-	if cmd.name == "gradebook-calculate" {
-		class, err = gradebook.UnmarshalCalcClass(cmd.classFile)
-	} else {
-		class, err = gradebook.UnmarshalClass(cmd.classFile)
-	}
+	class, err := gradebook.UnmarshalClass(cmd.classFile)
 	if err != nil {
 		cmd.exitValue = exitFailure
 		fmt.Fprintf(cmd.stderr, "%s: problem unmarshaling class: %s\n", cmd.name, err)
+
+		return nil
+	}
+	if err = class.Validate(); err != nil {
+		cmd.exitValue = exitFailure
+		fmt.Fprintf(cmd.stderr, "%s: problem validating class: %s\n", cmd.name, err)
 
 		return nil
 	}

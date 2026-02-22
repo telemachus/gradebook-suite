@@ -10,16 +10,15 @@ import (
 // output is "FirstName LastName", but the user can opt for "LastName,
 // FirstName" instead.
 func GradebookNames(args []string) int {
-	cmd := cmdFrom("gradebook-names", namesUsage, suiteVersion)
+	cmd := cmdFrom("gradebook-names", namesUsage)
 
-	cmd.parse(args)
-	cmd.printHelpOrVersion()
-
-	cmd.resolvePaths()
-	class := cmd.unmarshalClass()
-	cmd.printNames(class)
-
-	return cmd.exitValue
+	return runCommand(cmd, args, commandRun[noArgs]{
+		parse:     (*cmdEnv).parseNames,
+		loadClass: true,
+		action: func(cmd *cmdEnv, class *gradebook.Class, _ noArgs) {
+			cmd.printNames(class)
+		},
+	})
 }
 
 func (cmd *cmdEnv) printNames(class *gradebook.Class) {

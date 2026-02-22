@@ -15,17 +15,16 @@ import (
 
 // GradebookNew creates a new gradebook file for a class.
 func GradebookNew(args []string) int {
-	cmd := cmdFrom("gradebook-new", newUsage, suiteVersion)
+	cmd := cmdFrom("gradebook-new", newUsage)
 
-	gbCfg := cmd.parseNew(args)
-	cmd.printHelpOrVersion()
-
-	cmd.resolvePaths()
-	class := cmd.unmarshalClass()
-	cmd.checkNew(class, gbCfg)
-	cmd.newGradebook(class, gbCfg)
-
-	return cmd.exitValue
+	return runCommand(cmd, args, commandRun[newCfg]{
+		parse:     (*cmdEnv).parseNew,
+		loadClass: true,
+		action: func(cmd *cmdEnv, class *gradebook.Class, gbCfg newCfg) {
+			cmd.checkNew(class, gbCfg)
+			cmd.newGradebook(class, gbCfg)
+		},
+	})
 }
 
 type newCfg struct {
@@ -35,7 +34,7 @@ type newCfg struct {
 }
 
 func (cmd *cmdEnv) parseNew(args []string) newCfg {
-	og := cmd.commonOptsGroup()
+	og := cmd.commonOptsGroup(parseOpts{})
 
 	var cfg newCfg
 	og.String(&cfg.gbName, "name", "")
@@ -104,7 +103,7 @@ func (cmd *cmdEnv) newGradebook(class *gradebook.Class, cfg newCfg) {
 		if errors.Is(err, os.ErrExist) {
 			fmt.Fprintf(cmd.stderr, "%s: %q already exists\n", cmd.name, fileName)
 		} else {
-			fmt.Printf("%s: problem writing %q: %s\n", cmd.name, fileName, err)
+			fmt.Fprintf(cmd.stderr, "%s: problem writing %q: %s\n", cmd.name, fileName, err)
 		}
 	}
 }
@@ -139,19 +138,28 @@ func isValidDate(cmd *cmdEnv, gbDate string) {
 	}
 }
 
-func writeFile(fileName string, data []byte) error {
+func writeFile(fileName string, data []byte) (err error) {
 	fh, err := os.OpenFile(fileName, os.O_WRONLY|os.O_CREATE|os.O_EXCL, 0o644)
 	if err != nil {
-		return err
+		return fmt.Errorf("open file %q: %w", fileName, err)
 	}
-	defer fh.Close()
-
-	_, err = fh.Write(data)
-	if err != nil {
+	defer func() {
 		closeErr := fh.Close()
+		if closeErr == nil {
+			return
+		}
 
-		return errors.Join(err, closeErr)
+		err = errors.Join(err, fmt.Errorf("close file %q: %w", fileName, closeErr))
+	}()
+
+	if _, err = fh.Write(data); err != nil {
+		return fmt.Errorf("write file %q: %w", fileName, err)
 	}
 
-	return fh.Sync()
+	syncErr := fh.Sync()
+	if syncErr != nil {
+		return fmt.Errorf("sync file %q: %w", fileName, syncErr)
+	}
+
+	return nil
 }

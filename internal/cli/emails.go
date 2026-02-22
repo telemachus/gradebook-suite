@@ -9,16 +9,15 @@ import (
 
 // GradebookEmails prints the emails of students in a class.
 func GradebookEmails(args []string) int {
-	cmd := cmdFrom("gradebook-emails", emailsUsage, suiteVersion)
+	cmd := cmdFrom("gradebook-emails", emailsUsage)
 
-	cmd.parse(args)
-	cmd.printHelpOrVersion()
-
-	cmd.resolvePaths()
-	class := cmd.unmarshalClass()
-	cmd.printEmails(class)
-
-	return cmd.exitValue
+	return runCommand(cmd, args, commandRun[noArgs]{
+		parse:     (*cmdEnv).parseNoArgs,
+		loadClass: true,
+		action: func(cmd *cmdEnv, class *gradebook.Class, _ noArgs) {
+			cmd.printEmails(class)
+		},
+	})
 }
 
 func (cmd *cmdEnv) printEmails(class *gradebook.Class) {
